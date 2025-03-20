@@ -18,14 +18,18 @@ const Navbar = () => {
 
   return (
     <div className='flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400'>
-      <img onClick={() => navigate('/')} className='w-44 cursor-pointer' src={assets.logo} alt="" />
+      <div onClick={() => navigate('/')} className='flex items-center cursor-pointer'>
+        <img className='size-[50px] cursor-pointer' src={assets.taktiklablogo} alt="" loading='lazy' />
+        <h3 className='text-2xl font-bold'>Taktik<span className='text-[#5f6FFF]'>Lab</span></h3>
+      </div>
+
       <ul className='hidden md:flex items-start gap-5 font-medium '>
         <NavLink to='/'>
           <li className='py-1'>Home</li>
           <hr className='border-none outline-none h-0.5 bg-[#5f6FFF] w-3/5 m-auto hidden ' />
         </NavLink>
-        <NavLink to='/doctors'>
-          <li className='py-1'>All Doctors</li>
+        <NavLink to='/coaches'>
+          <li className='py-1'>Coaches</li>
           <hr className='border-none outline-none h-0.5 bg-[#5f6FFF] w-3/5 m-auto hidden' />
         </NavLink>
         <NavLink to='/about'>
