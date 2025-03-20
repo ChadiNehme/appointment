@@ -3,26 +3,25 @@ import { assets } from '../assets/assets_frontend/assets'
 
 const Header = () => {
   return (
-    <div className='flex flex-col md:flex-row flex-wrap bg-[#5f6FFF] rounded-lg px-6 md:px-10 lg:px-20'>
+    <div className='flex flex-col md:flex-row flex-wrap bg-[#5f6FFF] rounded-2xl px-6 md:px-10 lg:px-10'>
 
       {/* --- left side --- */}
-      <div className='md:w-1/2 flex flex-col items-start justify-center gap-4 py-10 m-auto md:py-[10vw] md:mb-[-30px]'>
+      <div className='md:w-1/2  flex flex-col items-start justify-center gap-4 py-8 m-auto md:py-[10vw] md:mb-[-30px]'>
         <p className='text-3xl md:text-4xl lg:text-5xl text-white font-semibold leading-tight md:leading-tight lg:leading-tight'>
-          Book Appointment <br />
-          with Trusted Doctors
+          Empower Young  <br />
+          Innovators!
         </p>
         <div className='flex flex-col md:flex-row items-center gap-3 text-white text-sm font-light'>
-          <img className='w-28' src={assets.group_profiles} alt="" />
-          <p>Simply browse through our example list of trusted doctors, <br className='hidden sm:block' /> schedule your appointment hassle-free</p>
+        Dive into the exciting world of robotics with expert-led online sessions. From building robots to mastering programming, the future starts here!
         </div>
         <a href="#specialty" className='flex items-center gap-2 bg-white px-8 py-3 rounded-full text-gray-600 text-sm m-auto md:m-0 hover:scale-105 transition-all duration-300'>
-          Book appointment <img className='w-3' src={assets.arrow_icon} alt="" />
+          Book Session <img className='w-3' src={assets.arrow_icon} alt="" />
         </a>
       </div>
 
       {/* --- right side */}
       <div className='md:w-1/2 relative'>
-        <img className='w-full md:absolute bottom-0 h-auto rounded-lg' src={assets.header_img} alt="" />
+        <img className='hidden w-3/4 md:absolute md:block bottom-10 right-0  h-auto rounded-lg opacity-75 ' src={assets.taktiklablogo} alt="" loading='lazy' />
       </div>
     </div>
   )

@@ -133,11 +133,11 @@ const Appointment = () => {
             </p>
           ))}
         </div>
-        <button className='bg-[#5f6FFF] text-white text-sm font-light px-14 py-3 rounded-full my-6 cursor-pointer'>Book an appointment</button>
+        <button className='bg-[#5f6FFF] text-white text-sm font-light px-14 py-3 rounded-full my-6 cursor-pointer'>Book a Session</button>
       </div>
       {/* Listing related doc */}
 
-      <RelatedDoctor docId={docId} speciality={docInfo.speciality} />
+      {/* <RelatedDoctor docId={docId} speciality={docInfo.speciality} /> */}
     </div>
   )
 }
