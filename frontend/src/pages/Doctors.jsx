@@ -35,19 +35,19 @@ const Doctors = () => {
           <p onClick={() => speciality === 'Web Programming' ? navigate('/coaches') : navigate('/coaches/Web Programming')} className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === "Web Programming" ? 'bg-indigo-100 text-black' : ''}`}>Web Programming</p>
          
           </div>
-        <div className='w-full grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 gap-y-6'>
+        <div className='w-full flex flex-wrap gap-4 p-5 px-3 sm:px-0 items-center justify-center'>
           {filterDoc.map((item, index) => (
-            <div onClick={() => navigate(`/appointment/${item._id}`)} className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500' key={index}>
-              <img className='bg-blue-50' src={item.image} alt="" />
-              <div className='p-4'>
-                <div className='flex items-center gap-2 text-sm text-center text-green-500'>
-                  <p className='size-2 bg-green-500 rounded-full'></p><p>Available</p>
-                </div>
-                <p className='text-gray-900 text-lg font-medium'>{item.name}</p>
-                <p className='text-gray-600 text-sm'>{item.speciality}</p>
-
+            <div onClick={() => { navigate(`/appointment/${item._id}`); scrollTo(0, 0) }} className='w-80 md:w-96 h-[450px] border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500 sm:w-1/2 md:w-1/3  lg:w-1/4' key={index}>
+            <img className='bg-blue-50 w-full h-80  rounded-t-xl object-cover' src={item.image} alt="" />
+            <div className='p-4'>
+              <div className='flex items-center gap-2 text-sm text-center text-green-500'>
+                <p className='size-2 bg-green-500 rounded-full'></p><p>Available</p>
               </div>
+              <p className='text-gray-900 text-lg font-medium'>{item.name}</p>
+              <p className='text-gray-600 text-sm'>{item.speciality}</p>
+
             </div>
+          </div>
           ))}
         </div>
       </div>
