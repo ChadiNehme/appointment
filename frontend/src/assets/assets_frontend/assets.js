@@ -48,10 +48,13 @@ import Danah from './Danah.png'
 import nancy from './nancy.png'
 import hana from './hana.png'
 import rita from './rita.png'
+import Chadi from './Chadi.png'
+import roro from './roro.png'
 
 
 
 export const assets = {
+    roro,
     robot,
     taktiklablogo,
     appointment_img,
@@ -98,7 +101,7 @@ export const doctors = [
     {
         _id: 'doc1',
         name: 'Chadi Nehme',
-        image: mypic,
+        image: Chadi,
         speciality: 'Web Programming',
         degree: 'MBBS',
         experience: '4 Years',
@@ -153,7 +156,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc14',
+        _id: 'doc15',
         name: 'Rita Ghanawi',
         image: rita,
         speciality: 'Java',
@@ -167,7 +170,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc14',
+        _id: 'doc16',
         name: 'Hanaa Wehbe',
         image: hana,
         speciality: 'Java',

@@ -21,7 +21,7 @@ const Header = () => {
 
       {/* --- right side */}
       <div className='md:w-1/2 relative'>
-        <img className='hidden w-3/4 md:absolute md:block bottom-10 right-0  h-auto rounded-lg opacity-75 ' src={assets.taktiklablogo} alt="" loading='lazy' />
+        <img className='hidden w-full md:absolute md:block bottom-10 right-0  h-auto rounded-lg opacity-75 ' src={assets.roro} alt="" loading='lazy' />
       </div>
     </div>
   )
