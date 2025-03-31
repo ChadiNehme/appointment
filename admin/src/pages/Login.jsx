@@ -49,7 +49,7 @@ const Login = () => {
           <input onChange={(e) => setPassword(e.target.value)} value={password} className='border border-[#DADADA] rounded w-full p-2 mt-1' type="password" required />
         </div>
 
-        <button className='bg-[#5F6FFF] text-white w-full py-2 rounded-md text-base'>Login</button>
+        <button className='bg-[#5F6FFF] text-white w-full py-2 rounded-md text-base cursor-pointer'>Login</button>
         {
           state === 'Admin'
             ? <p>Coach Login? <span className='cursor-pointer text-[#5F6FFF] underline' onClick={() => setState('Coache')}>Click here</span></p>

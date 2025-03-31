@@ -16,7 +16,7 @@ function App() {
 
 
 
-  return !aToken ? (
+  return aToken ? (
     <div className="bg-[#F8F9FD]">
       <ToastContainer />
       <Navbar />
