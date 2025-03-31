@@ -6,7 +6,7 @@ import RelatedCoach from '../component/RelatedCoach'
 
 const Appointment = () => {
   const { docId } = useParams()
-  const { doctors, currencySymbol } = useContext(AppContext)
+  const { coaches, currencySymbol } = useContext(AppContext)
 
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
@@ -16,7 +16,7 @@ const Appointment = () => {
   const [slotTime, setSlotTime] = useState('')
 
   const fetchDocInfo = async () => {
-    const docInfo = doctors.find(doc => doc._id === docId)
+    const docInfo = coaches.find(doc => doc._id === docId)
     setDocInfo(docInfo)
 
   }
@@ -72,7 +72,7 @@ const Appointment = () => {
 
   useEffect(() => {
     fetchDocInfo()
-  }, [doctors, docId])
+  }, [coaches, docId])
 
   useEffect(() => {
     getAvailableSlots()
