@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppContext';
 
-const TopDoctors = () => {
+const TopCoaches = () => {
   const { doctors } = useContext(AppContext)
 
   const navigate = useNavigate();
@@ -29,4 +29,4 @@ const TopDoctors = () => {
   )
 }
 
-export default TopDoctors
+export default TopCoaches

@@ -84,17 +84,28 @@ const loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-      const token = jwt.sign(email+password,process.env.JWT_SECRET)
+      const token = jwt.sign(email + password, process.env.JWT_SECRET)
 
-      res.json({success:true,token})
+      res.json({ success: true, token })
 
-    }else{
-      res.json({success:false,message:"Invalid credentials"})
+    } else {
+      res.json({ success: false, message: "Invalid credentials" })
     }
 
+  } catch (error) {
+
+  }
+}
+//get all coach list
+const allCoaches = async (req, res) => {
+  try {
+    const coaches = await coachModel.find({}).select('-password')
+    res.json({ success: true, coaches })
   } catch (error) {
     res.json({ success: false, message: error.message })
   }
 }
 
-export { addCoach, loginAdmin }
+
+
+export { addCoach, loginAdmin, allCoaches }

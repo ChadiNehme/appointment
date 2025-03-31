@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom"
 import Home from "./pages/Home"
-import Doctors from "./pages/Doctors"
+import Coaches from "./pages/Coaches"
 import Login from "./pages/Login"
 import About from "./pages/About"
 import Contact from "./pages/Contact"
@@ -17,8 +17,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/coaches" element={<Doctors />} />
-        <Route path='/coaches/:speciality' element={<Doctors />} />
+        <Route path="/coaches" element={<Coaches />} />
+        <Route path='/coaches/:speciality' element={<Coaches />} />
         <Route path='/login' element={<Login />} />
         <Route path='/about' element={<About />} />
         <Route path="/contact" element={<Contact />} />
