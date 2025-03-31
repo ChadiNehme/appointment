@@ -4,6 +4,7 @@ import 'dotenv/config'
 import dotenv from "dotenv"
 import { Connect } from './config/mongodb.js'
 import adminRouter from './routes/adminRoute.js'
+import coachRouter from './routes/coachRoute.js'
 
 dotenv.config()
 //app config
@@ -17,7 +18,7 @@ app.use(cors())
 //api endpoint
 
 app.use('/api/admin',adminRouter)
-
+app.use('/api/coach/',coachRouter)
 app.get('/',(req,res)=>{
     res.send("API Working")
 })
