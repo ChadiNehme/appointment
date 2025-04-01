@@ -5,17 +5,17 @@ import { useNavigate } from 'react-router-dom'
 const RelatedCoach = ({ docId, speciality }) => {
   const navigate = useNavigate()
 
-  const { doctors } = useContext(AppContext)
+  const { coaches } = useContext(AppContext)
 
   const [relDoc, setRelDoc] = useState([])
 
   useEffect(() => {
-    if (doctors.length > 0 && speciality) {
-      const doctorsData = doctors.filter((doc) => doc.speciality === speciality && doc._id !== docId)
+    if (coaches.length > 0 && speciality) {
+      const doctorsData = coaches.filter((doc) => doc.speciality === speciality && doc._id !== docId)
       setRelDoc(doctorsData)
 
     }
-  }, [doctors, speciality, docId])
+  }, [coaches, speciality, docId])
 
   return (
     <div className='flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10'>
@@ -37,7 +37,7 @@ const RelatedCoach = ({ docId, speciality }) => {
         ))}
       </div>
 
-      <button onClick={() => { navigate('/doctors'); scrollTo(0, 0) }} className='bg-blue-50 text-gray-600 px-12 py-3 rounded-full mt-10 cursor-pointer'>more</button>
+      <button onClick={() => { navigate('/coaches'); scrollTo(0, 0) }} className='bg-blue-50 text-gray-600 px-12 py-3 rounded-full mt-10 cursor-pointer'>more</button>
     </div>
   )
 }
