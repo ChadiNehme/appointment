@@ -8,19 +8,19 @@ const Coaches = () => {
   const [filterDoc, setFilterDoc] = useState([])
   const [showFilter, setShowFilter] = useState(false)
   const navigate = useNavigate()
-  const { doctors } = useContext(AppContext)
+  const { coaches } = useContext(AppContext)
 
   const applyFilter = () => {
     if (speciality) {
-      setFilterDoc(doctors.filter(doc => doc.speciality === speciality))
+      setFilterDoc(coaches.filter(doc => doc.speciality === speciality))
     } else {
-      setFilterDoc(doctors)
+      setFilterDoc(coaches)
     }
   }
 
   useEffect(() => {
     applyFilter()
-  }, [doctors, speciality])
+  }, [coaches, speciality])
 
   return (
     <div>
@@ -44,7 +44,7 @@ const Coaches = () => {
                 <p className='size-2 bg-green-500 rounded-full'></p><p>Available</p>
               </div>
               <p className='text-gray-900 text-lg font-medium'>{item.name}</p>
-              <p className='text-gray-600 text-sm'>{item.speciality}</p>
+              <p className='text-gray-600 text-sm'>{item.specialty}</p>
 
             </div>
           </div>
