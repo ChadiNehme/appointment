@@ -8,19 +8,17 @@ export const AppContext = createContext()
 const AppContextProvider = ({ children }) => {
 
   const [coaches, setCoaches] = useState([])
+  const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : false)
 
   const currencySymbol = '$'
   const backendUrl = import.meta.env.VITE_BACKEND_URL
-  const value = {
-    coaches,
-    currencySymbol
-  }
+
   const getCoachesData = async () => {
     try {
       const { data } = await axios.get(backendUrl + '/api/coach/list')
       if (data.success) {
         setCoaches(data.coaches)
-      }else{
+      } else {
         toast.error(data.message)
       }
     } catch (error) {
@@ -29,6 +27,14 @@ const AppContextProvider = ({ children }) => {
 
 
     }
+  }
+
+  const value = {
+    coaches,
+    currencySymbol,
+    token,
+    setToken,
+    backendUrl
   }
 
   useEffect(() => {
