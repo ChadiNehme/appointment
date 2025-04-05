@@ -14,7 +14,8 @@ const addCoach = async (req, res) => {
   try {
     const { name, email, password, specialty, degree, experience, about, fees } = req.body;
     const imageFile = req.file;  // Handle image upload via multer
-    console.log(imageFile);
+    
+    
 
     // Check if all required fields are provided
     if (!name || !email || !password || !specialty || !degree || !experience || !about || !fees) {
