@@ -1,14 +1,18 @@
 import { useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 import { assets } from '../assets/assets_frontend/assets'
 import RelatedCoach from '../component/RelatedCoach'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const Appointment = () => {
-  const { docId } = useParams()
-  const { coaches, currencySymbol } = useContext(AppContext)
+  const { coachId } = useParams()
+  const { coaches, currencySymbol, backendUrl, token, getCoachesData } = useContext(AppContext)
 
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+
+  const navigate = useNavigate()
 
   const [docInfo, setDocInfo] = useState(null)
   const [docSlots, setDocSlots] = useState([])
@@ -16,7 +20,7 @@ const Appointment = () => {
   const [slotTime, setSlotTime] = useState('')
 
   const fetchDocInfo = async () => {
-    const docInfo = coaches.find(doc => doc._id === docId)
+    const docInfo = coaches.find(coach => coach._id === coachId)
     setDocInfo(docInfo)
 
   }
@@ -70,9 +74,47 @@ const Appointment = () => {
 
   }
 
+  const bookAppointment = async () => {
+
+    if (!token) {
+      toast.warn('Please login to book an appointment')
+      return navigate('/login')
+    }
+    try {
+      
+      const date = docSlots[slotIndex][0].datetime
+      let day = date.getDate()
+      let month = date.getMonth() + 1
+      let year = date.getFullYear()
+
+      const slotDate  = day + '-' + month + '-' + year
+     
+      const {data}  = await axios.post(backendUrl + '/api/user/book-appointment', {
+        coachId,
+        slotDate,
+        slotTime
+      }, {
+        headers: {
+          token
+        }
+      })
+      if (data.success) {
+        toast.success(data.message)
+        getCoachesData()
+        navigate('/my-appointments')
+      } else {
+        toast.error(data.message)
+      }
+      
+
+    } catch (error) {
+      
+    }
+  }
+
   useEffect(() => {
     fetchDocInfo()
-  }, [coaches, docId])
+  }, [coaches, coachId])
 
   useEffect(() => {
     getAvailableSlots()
@@ -82,6 +124,7 @@ const Appointment = () => {
     console.log(docSlots);
 
   }, [docSlots])
+
 
 
 
@@ -128,12 +171,12 @@ const Appointment = () => {
         </div>
         <div className='flex items-center gap-3 w-full overflow-x-scroll mt-4'>
           {docSlots.length && docSlots[slotIndex].map((item, index) => (
-            <p onClick={()=>setSlotTime(item.time)} className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time===slotTime?'bg-[#5f6FFF] text-white':'text-gray-400 border border-gray-300'}`} key={index}>
+            <p onClick={() => setSlotTime(item.time)} className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time === slotTime ? 'bg-[#5f6FFF] text-white' : 'text-gray-400 border border-gray-300'}`} key={index}>
               {item.time.toLowerCase()}
             </p>
           ))}
         </div>
-        <button className='bg-[#5f6FFF] text-white text-sm font-light px-14 py-3 rounded-full my-6 cursor-pointer'>Book a Session</button>
+        <button onClick={bookAppointment} className='bg-[#5f6FFF] text-white text-sm font-light px-14 py-3 rounded-full my-6 cursor-pointer'>Book a Session</button>
       </div>
       {/* Listing related doc */}
 

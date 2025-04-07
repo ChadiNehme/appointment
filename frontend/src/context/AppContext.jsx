@@ -46,7 +46,7 @@ const AppContextProvider = ({ children }) => {
   }
 
   const value = {
-    coaches,
+    coaches,getCoachesData,
     currencySymbol,
     token,
     setToken,

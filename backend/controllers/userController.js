@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken'
 import fs from 'fs';
 import FormData from 'form-data';
 import axios from 'axios'
+import coachModel from '../models/CoachModel.js';
+import appointmentModel from '../models/appointmentModel.js';
 //api to register user
 
 const registerUser = async (req, res) => {
@@ -129,4 +131,55 @@ const updateProfile = async (req, res) => {
   }
 }
 
-export { registerUser, loginUser, getProfile, updateProfile }
+//book appointment
+const bookAppointment = async (req, res) => {
+  try {
+    const { userId, coachId, slotDate, slotTime } = req.body
+    const coachData = await coachModel.findById(coachId).select('-password')
+
+    if (!coachData.available) {
+      return res.json({ success: false, message: "Coach not available" })
+
+    }
+
+    let slots_booked = coachData.slots_booked
+    if (slots_booked[slotDate]) {
+      if (slots_booked[slotDate].includes(slotTime)) {
+        return res.json({ success: false, message: "Slot already booked" })
+      } else {
+        slots_booked[slotDate].push(slotTime)
+      }
+    } else {
+      slots_booked[slotDate] = []
+      slots_booked[slotDate].push(slotTime)
+    }
+
+    const userData = await userModel.findById(userId).select('-password')
+    delete coachData.slots_booked
+    const appointmentData = {
+      userId,
+      coachId,
+      slotDate,
+      slotTime,
+      userData,
+      coachData,
+      amount: coachData.fees,
+      date: Date.now()
+    }
+    const newAppointment = new appointmentModel(appointmentData)
+    await newAppointment.save()
+
+    //save new slots data in coachData
+
+    await coachModel.findByIdAndUpdate(coachId, {
+      slots_booked: slots_booked
+    })
+    res.json({ success: true, message: "Appointment booked" })
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message })
+  }
+}
+
+export { registerUser, loginUser, getProfile, updateProfile, bookAppointment }
