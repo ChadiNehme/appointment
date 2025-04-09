@@ -198,4 +198,36 @@ const listAppointment = async (req, res) => {
   }
 }
 
-export { registerUser, loginUser, getProfile, updateProfile, bookAppointment, listAppointment }
+//cancel appointment
+const cancelAppointment = async (req, res) => {
+  try {
+    const { userId, appointmentId } = req.body
+
+    const appointmentData = await appointmentModel.findById(appointmentId)
+
+    if (appointmentData.userId !== userId) {
+      return res.json({ success: false, message: "You are not authorized to cancel this appointment" })
+    }
+    await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
+
+    //remove slots from coachData
+    const { coachId, slotDate, slotTime } = appointmentData
+
+    const coachData = await coachModel.findById(coachId).select('-password')
+    let slots_booked = coachData.slots_booked
+
+    slots_booked[slotDate] = slots_booked[slotDate].filter(slot => slot !== slotTime)
+    await coachModel.findByIdAndUpdate(coachId, {
+      slots_booked: slots_booked
+    })
+    res.json({ success: true, message: "Appointment cancelled" })
+
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message })
+
+  }
+}
+
+export { registerUser, loginUser, getProfile, updateProfile, bookAppointment, listAppointment, cancelAppointment }  // Export the functions
