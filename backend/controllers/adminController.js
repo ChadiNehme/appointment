@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import fs from 'fs';
 import FormData from 'form-data';
 import jwt from "jsonwebtoken"
+import appointmentModel from '../models/appointmentModel.js';
 dotenv.config()
 
 const addCoach = async (req, res) => {
@@ -14,8 +15,8 @@ const addCoach = async (req, res) => {
   try {
     const { name, email, password, specialty, degree, experience, about, fees } = req.body;
     const imageFile = req.file;  // Handle image upload via multer
-    
-    
+
+
 
     // Check if all required fields are provided
     if (!name || !email || !password || !specialty || !degree || !experience || !about || !fees) {
@@ -107,6 +108,47 @@ const allCoaches = async (req, res) => {
   }
 }
 
+//get all appointments
+const appointmentsAdmin = async (req, res) => {
+  try {
+    const appointments = await appointmentModel.find({})
+    res.json({ success: true, appointments })
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
+
+//cancel appointment
+const appointmentCancel = async (req, res) => {
+  try {
+    const { appointmentId } = req.body
+
+    const appointmentData = await appointmentModel.findById(appointmentId)
+
+   
+    await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
+
+    //remove slots from coachData
+    const { coachId, slotDate, slotTime } = appointmentData
+
+    const coachData = await coachModel.findById(coachId).select('-password')
+    let slots_booked = coachData.slots_booked
+
+    slots_booked[slotDate] = slots_booked[slotDate].filter(slot => slot !== slotTime)
+    await coachModel.findByIdAndUpdate(coachId, {
+      slots_booked: slots_booked
+    })
+    res.json({ success: true, message: "Appointment cancelled" })
 
 
-export { addCoach, loginAdmin, allCoaches }
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message })
+
+  }
+}
+
+
+
+
+export { addCoach, loginAdmin, allCoaches, appointmentsAdmin, appointmentCancel }
