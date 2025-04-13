@@ -8,6 +8,7 @@ const AdminContextProvider = ({ children }) => {
   const [aToken, setAToken] = useState(localStorage.getItem('aToken') ? localStorage.getItem('aToken') : '')
   const [coaches, setCoaches] = useState([])
   const [appointments, setAppointments] = useState([])
+  const [dashboardData, setDashboardData] = useState(false)
   const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 
@@ -71,6 +72,21 @@ const AdminContextProvider = ({ children }) => {
       toast.error("error.message")
     }
   }
+  const getDashboardData = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + '/api/admin/dashboard', { headers: { aToken } })
+      if (data.success) {
+        setDashboardData(data.dashData)
+        console.log(data.dashData);
+        
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error("error.message")
+      
+    }
+  }
 
   const value = {
     aToken,
@@ -82,7 +98,9 @@ const AdminContextProvider = ({ children }) => {
     appointments,
     getAllAppointments,
     setAppointments,
-    cancelAppointment
+    cancelAppointment,
+    dashboardData,
+    getDashboardData
   }
 
   return (

@@ -7,6 +7,7 @@ import fs from 'fs';
 import FormData from 'form-data';
 import jwt from "jsonwebtoken"
 import appointmentModel from '../models/appointmentModel.js';
+import userModel from '../models/userModel.js';
 dotenv.config()
 
 const addCoach = async (req, res) => {
@@ -125,7 +126,7 @@ const appointmentCancel = async (req, res) => {
 
     const appointmentData = await appointmentModel.findById(appointmentId)
 
-   
+
     await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
 
     //remove slots from coachData
@@ -148,7 +149,27 @@ const appointmentCancel = async (req, res) => {
   }
 }
 
+//get dashboard data
+
+const adminDashboard = async (req, res) => {
+  try {
+    const coaches = await coachModel.find({}).select('-password')
+    const users = await userModel.find({}).select('-password')
+    const appointments = await appointmentModel.find({})
+
+    const dashData = {
+      coaches: coaches.length,
+      users: users.length,
+      appointments: appointments.length,
+      latestAppointment: appointments.reverse().slice(0, 5),
+    }
+    res.json({ success: true, dashData })
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
 
 
 
-export { addCoach, loginAdmin, allCoaches, appointmentsAdmin, appointmentCancel }
+
+export { addCoach, loginAdmin, allCoaches, appointmentsAdmin, appointmentCancel,adminDashboard}
