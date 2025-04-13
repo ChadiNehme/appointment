@@ -1,6 +1,7 @@
 import coachModel from "../models/CoachModel.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import appointmentModel from "../models/appointmentModel.js"
 const changeAvailability = async (req, res) => {
   try {
     const { coachId } = req.body
@@ -45,4 +46,16 @@ const loginCoach = async (req, res) => {
   }
 }
 
-export { changeAvailability, coachList, loginCoach }
+// get coach appointment 
+
+const appointmentCoach = async (req, res) => {
+  try {
+    const { coachId } = req.body
+    const appointments = await appointmentModel.find({coachId })
+    res.json({ success: true, appointments })
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
+
+export { changeAvailability, coachList, loginCoach, appointmentCoach }

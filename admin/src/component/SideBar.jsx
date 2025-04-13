@@ -13,23 +13,23 @@ const SideBar = () => {
         aToken && <ul className='text-[#515151] mt-5'>
           <NavLink className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-[#5F6FFF]' : ''}`} to={'/admin-dashboard'}>
             <img src={assets.home_icon} alt="" />
-            <p>Dashboard</p>
+            <p className='hidden md:block'>Dashboard</p>
           </NavLink>
 
           <NavLink className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-[#5F6FFF]' : ''}`} to={'all-appointment'}>
             <img src={assets.appointment_icon} alt="" />
-            <p>Appointment</p>
+            <p className='hidden md:block'>Appointment</p>
           </NavLink>
 
 
           <NavLink className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-[#5F6FFF]' : ''}`} to={'add-coach'}>
             <img src={assets.add_icon} alt="" />
-            <p>Add Coach</p>
+            <p className='hidden md:block'>Add Coach</p>
           </NavLink>
 
           <NavLink className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-[#5F6FFF]' : ''}`} to={'coach-list'}>
             <img src={assets.people_icon} alt="" />
-            <p>CoachList</p>
+            <p className='hidden md:block'>CoachList</p>
           </NavLink>
         </ul>
       }
@@ -38,17 +38,17 @@ const SideBar = () => {
         cToken && <ul className='text-[#515151] mt-5'>
           <NavLink className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-[#5F6FFF]' : ''}`} to={'/coach-dashboard'}>
             <img src={assets.home_icon} alt="" />
-            <p>Dashboard</p>
+            <p className='hidden md:block'>Dashboard</p>
           </NavLink>
 
           <NavLink className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-[#5F6FFF]' : ''}`} to={'coach-appointment'}>
             <img src={assets.appointment_icon} alt="" />
-            <p>Appointment</p>
+            <p className='hidden md:block'>Appointment</p>
           </NavLink>
 
           <NavLink className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-[#5F6FFF]' : ''}`} to={'coach-profile'}>
             <img src={assets.people_icon} alt="" />
-            <p>Profile</p>
+            <p className='hidden md:block'>Profile</p>
           </NavLink>
         </ul>
       }
