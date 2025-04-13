@@ -4,6 +4,7 @@ import { useContext, useState } from 'react'
 import { AdminContext } from '../context/AdminContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { CoachContext } from '../context/CoachContext'
 const Login = () => {
 
   const [state, setState] = useState('Admin')
@@ -11,6 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const { setAToken, backendUrl } = useContext(AdminContext)
 
+  const {setCToken} = useContext(CoachContext)
 
 
 
@@ -28,10 +30,20 @@ const Login = () => {
           toast.error(data.message)
         }
       } else {
+        const {data} = await axios.post(backendUrl + '/api/coach/login', { email, password })
+        if (data.success) {
+          localStorage.setItem('cToken', data.token)
+          setCToken(data.token)
+          console.log(data.token);
+          
+        } else {
+          toast.error(data.message)
+        }
+
 
       }
     } catch (error) {
-
+      toast.error(error.message)
     }
   }
 
