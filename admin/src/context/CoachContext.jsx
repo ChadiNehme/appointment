@@ -11,6 +11,7 @@ const CoachContextProvider = ({ children }) => {
   const [appointments, setAppointments] = useState([])
 
   const [dashData, setDashData] = useState(false)
+  const [profileData, setProfileData] = useState(false)
 
   const getAppointments = async () => {
     try {
@@ -77,6 +78,21 @@ const CoachContextProvider = ({ children }) => {
     }
   }
 
+  const getProfileData = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + '/api/coach/profile', { headers: { cToken } })
+      if (data.success) {
+        setProfileData(data.profileData)
+        console.log(data.profileData);
+        
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      console.log(error.message)
+      toast.error("Something went wrong")
+    }
+  }
 
   const value = {
     cToken,
@@ -89,7 +105,10 @@ const CoachContextProvider = ({ children }) => {
     cancelAppointment,
     getDashboardData,
     dashData,
-    setDashData
+    setDashData,
+    getProfileData,
+    profileData,
+    setProfileData
 
   }
 

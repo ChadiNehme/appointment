@@ -123,7 +123,39 @@ const coachDashboard = async (req, res) => {
     res.json({ success: true, dashData })
   } catch (error) {
     res.json({ success: false, message: error.message })
-    
+
   }
 }
-export { changeAvailability, coachList, loginCoach, appointmentCoach, appointmentComplete, appointmentCancel, coachDashboard }
+
+//coach profile
+const coachProfile = async (req, res) => {
+  try {
+    const { coachId } = req.body
+    const profileData = await coachModel.findById(coachId).select('-password')
+    res.json({ success: true, profileData })
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
+
+//update coach profile
+const updateCoachProfile = async (req, res) => {
+  try {
+    const { coachId, fees, available } = req.body
+    await coachModel.findByIdAndUpdate(coachId, { fees, available })
+    res.json({ success: true, message: 'Profile Updated' })
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
+export {
+  changeAvailability,
+  coachList,
+  loginCoach,
+  appointmentCoach,
+  appointmentComplete,
+  appointmentCancel,
+  coachDashboard,
+  coachProfile,
+  updateCoachProfile
+}
