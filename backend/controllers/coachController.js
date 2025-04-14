@@ -51,11 +51,79 @@ const loginCoach = async (req, res) => {
 const appointmentCoach = async (req, res) => {
   try {
     const { coachId } = req.body
-    const appointments = await appointmentModel.find({coachId })
+    const appointments = await appointmentModel.find({ coachId })
     res.json({ success: true, appointments })
   } catch (error) {
     res.json({ success: false, message: error.message })
   }
 }
 
-export { changeAvailability, coachList, loginCoach, appointmentCoach }
+//mark appointment as done
+const appointmentComplete = async (req, res) => {
+  try {
+    const { coachId, appointmentId } = req.body
+
+    const appointmentData = await appointmentModel.findById(appointmentId)
+    if (appointmentData && appointmentData.coachId === coachId) {
+      await appointmentModel.findByIdAndUpdate(appointmentId, { isCompleted: true })
+      return res.json({ success: true, message: 'Appointment Completed' })
+    } else {
+      return res.json({ success: false, message: 'Appointment not found' })
+    }
+
+
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
+
+//cancel appointment
+const appointmentCancel = async (req, res) => {
+  try {
+    const { coachId, appointmentId } = req.body
+
+    const appointmentData = await appointmentModel.findById(appointmentId)
+    if (appointmentData && appointmentData.coachId === coachId) {
+      await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
+      return res.json({ success: true, message: 'Appointment Cancelled' })
+    } else {
+      return res.json({ success: false, message: 'Appointment not found' })
+    }
+
+
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
+
+//dashboard data
+const coachDashboard = async (req, res) => {
+  try {
+    const { coachId } = req.body
+    const appointments = await appointmentModel.find({ coachId })
+    let earning = 0
+    appointments.map((item) => {
+      if (item.isCompleted || item.payment) {
+        earning += item.amount
+      }
+    })
+
+    let student = []
+    appointments.map((item) => {
+      if (!student.includes(item.userId)) {
+        student.push(item.userId)
+      }
+    })
+    const dashData = {
+      earning,
+      appointments: appointments.length,
+      students: student.length,
+      latestAppointments: appointments.slice(-5).reverse()
+    }
+    res.json({ success: true, dashData })
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+    
+  }
+}
+export { changeAvailability, coachList, loginCoach, appointmentCoach, appointmentComplete, appointmentCancel, coachDashboard }

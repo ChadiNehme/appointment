@@ -10,12 +10,14 @@ const CoachContextProvider = ({ children }) => {
 
   const [appointments, setAppointments] = useState([])
 
+  const [dashData, setDashData] = useState(false)
+
   const getAppointments = async () => {
     try {
-      const { data } = await axios.get(backendUrl +'/api/coach/appointments', { headers: { cToken } })
-    
+      const { data } = await axios.get(backendUrl + '/api/coach/appointments', { headers: { cToken } })
+
       if (data.success) {
-        setAppointments(data.appointments.reverse())
+        setAppointments(data.appointments)
         console.log(data.appointments);
 
       } else {
@@ -28,6 +30,52 @@ const CoachContextProvider = ({ children }) => {
     }
   }
 
+  const completeAppointment = async (appointmentId) => {
+    try {
+      const { data } = await axios.post(backendUrl + '/api/coach/appointment-complete', { appointmentId }, { headers: { cToken } })
+      if (data.success) {
+        toast.success(data.message)
+        getAppointments()
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      console.log(error.message)
+      toast.error("Something went wrong")
+
+    }
+  }
+
+  const cancelAppointment = async (appointmentId) => {
+    try {
+      const { data } = await axios.post(backendUrl + '/api/coach/appointment-cancel', { appointmentId }, { headers: { cToken } })
+      if (data.success) {
+        toast.success(data.message)
+        getAppointments()
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      console.log(error.message)
+      toast.error("Something went wrong")
+
+    }
+  }
+
+  const getDashboardData = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + '/api/coach/dashboard', { headers: { cToken } })
+      if (data.success) {
+        setDashData(data.dashData)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      console.log(error.message)
+      toast.error("Something went wrong")
+
+    }
+  }
 
 
   const value = {
@@ -36,7 +84,12 @@ const CoachContextProvider = ({ children }) => {
     backendUrl,
     appointments,
     getAppointments,
-    setAppointments
+    setAppointments,
+    completeAppointment,
+    cancelAppointment,
+    getDashboardData,
+    dashData,
+    setDashData
 
   }
 
