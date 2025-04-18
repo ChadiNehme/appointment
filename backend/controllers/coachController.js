@@ -17,6 +17,8 @@ const changeAvailability = async (req, res) => {
 const coachList = async (req, res) => {
   try {
     const coaches = await coachModel.find({}).select(['-password', '-email'])
+    console.log(coaches);
+    
     res.json({ success: true, coaches })
   } catch (error) {
     res.json({ success: false, message: error.message })

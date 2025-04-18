@@ -230,4 +230,17 @@ const cancelAppointment = async (req, res) => {
   }
 }
 
-export { registerUser, loginUser, getProfile, updateProfile, bookAppointment, listAppointment, cancelAppointment }  // Export the functions
+
+//Get coaches by course ID
+const coachesByCourseId = async (req, res) => {
+  try {
+    const { courseId } = req.params
+    const coaches = await coachModel.find({ courses: courseId }).select('-password')
+    res.json({ success: true, coaches })
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
+
+
+export { registerUser, loginUser, getProfile, updateProfile, bookAppointment, listAppointment, cancelAppointment}  // Export the functions

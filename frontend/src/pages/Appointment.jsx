@@ -66,6 +66,7 @@ const Appointment = () => {
 
         const slotDate = day + '-' + month + '-' + year
         const slotTime = formattedTime
+
         const isSlotAvailable = docInfo.slots_booked[slotDate] && docInfo.slots_booked[slotDate].includes(slotTime) ? false : true
 
         if (isSlotAvailable) {
@@ -75,7 +76,7 @@ const Appointment = () => {
           })
         }
 
-    
+
 
         //increment current time by 30min
 

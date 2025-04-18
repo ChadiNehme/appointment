@@ -50,11 +50,16 @@ import hana from './hana.png'
 import rita from './rita.png'
 import Chadi from './Chadi.png'
 import roro from './roro.png'
-
+import Coding from './Coding.jpg'
+import edu from './edu.jpg'
 
 
 export const assets = {
+    scratch,
+    edu,
+    Coding,
     roro,
+    Chadi,
     robot,
     taktiklablogo,
     appointment_img,
