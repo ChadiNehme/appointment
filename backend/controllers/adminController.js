@@ -173,6 +173,65 @@ const adminDashboard = async (req, res) => {
   }
 }
 
+//add new path
+const addPath = async (req, res) => {
+  const imgKey = process.env.IMGBB_API_KEY;
+  try {
+    const { pathName, pathDescription } = req.body
+    const imageFile = req.file;
+    if (!pathName || !pathDescription) {
+      return res.json({ success: false, message: "Enter all fields" })
+    }
+    // Create a new FormData instance and append the image to it
+    const formData = new FormData();
+    formData.append('image', fs.createReadStream(imageFile.path)); // Use file path to upload
+
+    // Make the POST request to ImgBB
+    const response = await axios.post("https://api.imgbb.com/1/upload", formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+      params: {
+        key: imgKey,
+      },
+
+      timeout: 10000,
+    });
+
+    // Get the URL of the uploaded image
+    const imageUrl = response.data.data.display_url;
+    const newPath = new pathModel({
+      pathName,
+      pathDescription,
+      image: imageUrl
+    })
+    await newPath.save()
+    res.json({ success: true, message: "Path added successfully" })
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
+//Add a new Course under a Path
+const addCourse = async (req, res) => {
+  try {
+    const { pathId, courseName, courseDescription } = req.body
+    const imageFile = req.file;
+    if (!pathId || !courseName || !courseDescription) {
+      return res.json({ success: false, message: "Enter all fields" })
+    }
+    const imageUrl = await uploadImage(imageFile)
+    const newCourse = new courseModel({
+      pathId,
+      courseName,
+      courseDescription,
+      image: imageUrl
+    })
+    await newCourse.save()
+    res.json({ success: true, message: "Course added successfully" })
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
 
 
 
