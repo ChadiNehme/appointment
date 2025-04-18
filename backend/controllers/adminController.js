@@ -8,6 +8,8 @@ import FormData from 'form-data';
 import jwt from "jsonwebtoken"
 import appointmentModel from '../models/appointmentModel.js';
 import userModel from '../models/userModel.js';
+import pathModel from '../models/pathModel.js';
+import courseModel from '../models/CourseModel.js';
 dotenv.config()
 
 const addCoach = async (req, res) => {
@@ -50,6 +52,8 @@ const addCoach = async (req, res) => {
       params: {
         key: imgKey,
       },
+
+      timeout: 10000,
     });
 
     // Get the URL of the uploaded image
@@ -172,4 +176,8 @@ const adminDashboard = async (req, res) => {
 
 
 
-export { addCoach, loginAdmin, allCoaches, appointmentsAdmin, appointmentCancel,adminDashboard}
+
+
+
+
+export { addCoach, loginAdmin, allCoaches, appointmentsAdmin, appointmentCancel, adminDashboard }
