@@ -10,6 +10,6 @@ const getCoachesByCourseId = async (req, res) => {
   } catch (error) {
     res.json({ success: false, message: error.message })
   }
-}
+  }
 
 export { getCoachesByCourseId }

@@ -177,9 +177,9 @@ const adminDashboard = async (req, res) => {
 const addPath = async (req, res) => {
   const imgKey = process.env.IMGBB_API_KEY;
   try {
-    const { pathName, pathDescription } = req.body
+    const { name, description } = req.body
     const imageFile = req.file;
-    if (!pathName || !pathDescription) {
+    if (!name || !description) {
       return res.json({ success: false, message: "Enter all fields" })
     }
     // Create a new FormData instance and append the image to it
@@ -201,8 +201,8 @@ const addPath = async (req, res) => {
     // Get the URL of the uploaded image
     const imageUrl = response.data.data.display_url;
     const newPath = new pathModel({
-      pathName,
-      pathDescription,
+      name,
+      description,
       image: imageUrl
     })
     await newPath.save()
@@ -213,17 +213,35 @@ const addPath = async (req, res) => {
 }
 //Add a new Course under a Path
 const addCourse = async (req, res) => {
+  const imgKey = process.env.IMGBB_API_KEY;
   try {
-    const { pathId, courseName, courseDescription } = req.body
+    const { path, name, description } = req.body
     const imageFile = req.file;
-    if (!pathId || !courseName || !courseDescription) {
+    if (!path || !name || !description) {
       return res.json({ success: false, message: "Enter all fields" })
     }
-    const imageUrl = await uploadImage(imageFile)
+    // Create a new FormData instance and append the image to it
+    const formData = new FormData();
+    formData.append('image', fs.createReadStream(imageFile.path)); // Use file path to upload
+
+    // Make the POST request to ImgBB
+    const response = await axios.post("https://api.imgbb.com/1/upload", formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+      params: {
+        key: imgKey,
+      },
+
+      timeout: 10000,
+    });
+
+    // Get the URL of the uploaded image
+    const imageUrl = response.data.data.display_url;
     const newCourse = new courseModel({
-      pathId,
-      courseName,
-      courseDescription,
+      path,
+      name,
+      description,
       image: imageUrl
     })
     await newCourse.save()
@@ -239,4 +257,4 @@ const addCourse = async (req, res) => {
 
 
 
-export { addCoach, loginAdmin, allCoaches, appointmentsAdmin, appointmentCancel, adminDashboard }
+export { addCoach, loginAdmin, allCoaches, appointmentsAdmin, appointmentCancel, adminDashboard, addCourse, addPath }

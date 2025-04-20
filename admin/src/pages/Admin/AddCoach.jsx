@@ -36,10 +36,10 @@ const AddCoach = () => {
       formData.append('specialty', specialty)
       formData.append('degree', degree)
 
-      formData.forEach((value, key) => {
-        console.log(`${key} :${value}`);
+      // formData.forEach((value, key) => {
+      //   console.log(`${key} :${value}`);
 
-      })
+      // })
 
       const { data } = await axios.post(backendUrl + '/api/admin/add-coach', formData, { headers: { aToken } })
       if (data.success) {

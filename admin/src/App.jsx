@@ -13,6 +13,8 @@ import { CoachContext } from "./context/CoachContext";
 import CoachDashboard from "./pages/Coach/CoachDashboard";
 import CoachAppointments from "./pages/Coach/CoachAppointments";
 import CoachProfile from "./pages/Coach/CoachProfile";
+import AddPathForm from "./pages/Admin/AddPath";
+import AddCourseForm from "./pages/Admin/AddCourse";
 
 function App() {
 
@@ -32,6 +34,8 @@ function App() {
           <Route path="/admin-dashboard" element={<Dashboard />} />
           <Route path="/all-appointment" element={<AllAppointments />} />
           <Route path="/add-coach" element={<AddCoach />} />
+          <Route path="/add-path" element={<AddPathForm />} />
+          <Route path="/add-course" element={<AddCourseForm />} />
           <Route path="/coach-list" element={<CoachList />} />
           {/* coach route */}
           <Route path="/coach-dashboard" element={<CoachDashboard />} />
