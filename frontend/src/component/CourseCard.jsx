@@ -8,7 +8,7 @@ const CourseCard = ({ course, pathId }) => {
       <img
         src={course.image || "https://via.placeholder.com/400x200"}
         alt={course.name}
-        className="w-full h-48 object-fill"
+        className="w-full h-58 object-fill rounded-t-2xl"
       />
 
       <div className="p-4">
@@ -17,7 +17,7 @@ const CourseCard = ({ course, pathId }) => {
           {course.description?.slice(0, 100)}...
         </p>
         <button
-          onClick={() => navigate(`/paths/${pathId}/courses/${course.name}/coaches`)}
+          onClick={() => navigate(`/paths/${pathId}/courses/${course._id}/coaches`)}
           className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition"
         >
           View Coaches

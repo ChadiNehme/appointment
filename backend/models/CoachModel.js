@@ -13,10 +13,10 @@ const coachSchema = new mongoose.Schema({
   fees: { type: Number, require: true },
   date: { type: Number, required: true },
   slots_booked: { type: Object, default: {} },
-  course: {
+  course: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Course',
-  },
+  }]
 }, { minimize: false })
 
 const coachModel = mongoose.models.coach || mongoose.model("Coach", coachSchema)

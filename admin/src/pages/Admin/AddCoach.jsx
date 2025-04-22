@@ -3,6 +3,7 @@ import { assets } from '../../assets/assets_admin/assets'
 import { AdminContext } from '../../context/AdminContext'
 import { toast } from 'react-toastify'
 import axios from 'axios'
+import { useEffect } from 'react'
 const AddCoach = () => {
 
 
@@ -10,13 +11,45 @@ const AddCoach = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [experience, setExperience] = useState('1 Year')
+  const [experience, setExperience] = useState('')
   const [fees, setFees] = useState('')
   const [about, setAbout] = useState('')
-  const [specialty, setSpecialty] = useState('Robotics')
+  const [specialty, setSpecialty] = useState('')
   const [degree, setDegree] = useState('')
+  const [courses, setCourses] = useState([]);
+
+  const [selectedCourses, setSelectedCourses] = useState([]);
 
   const { backendUrl, aToken } = useContext(AdminContext)
+
+
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await axios.get(`${backendUrl}/api/admin/all-courses`, {
+          headers: { aToken }
+        });
+        if (res.data.success) {
+          setCourses(res.data.courses); // Adjust based on your API response shape
+        }
+      } catch (err) {
+        toast.error("Failed to load courses");
+      }
+    };
+    fetchCourses();
+  }, []);
+
+  const handleCourseSelection = (e) => {
+    const courseId = e.target.value;
+    if (e.target.checked) {
+      setSelectedCourses((prev) => [...prev, courseId]);
+    } else {
+      setSelectedCourses((prev) => prev.filter(id => id !== courseId));
+    }
+  };
+
+
 
   const onSubmitHandler = async (e) => {
     e.preventDefault()
@@ -36,6 +69,9 @@ const AddCoach = () => {
       formData.append('specialty', specialty)
       formData.append('degree', degree)
 
+      selectedCourses.forEach((courseId) => {
+        formData.append('course', courseId); // append multiple course IDs
+      });
       // formData.forEach((value, key) => {
       //   console.log(`${key} :${value}`);
 
@@ -51,6 +87,9 @@ const AddCoach = () => {
         setPassword('')
         setDegree('')
         setFees('')
+        setExperience('')
+        setSpecialty('')
+        setSelectedCourses([]);
       } else {
         toast.error(data.message)
       }
@@ -78,6 +117,24 @@ const AddCoach = () => {
           <p>Upload coach <br /> picture</p>
         </div>
 
+        <div className='my-4'>
+          <p className='mb-2'>Assign Courses</p>
+          <div className='flex flex-wrap gap-4'>
+            {courses.map((course) => (
+              <label key={course._id} className='flex items-center gap-2'>
+                <input
+                  type="checkbox"
+                  value={course._id}
+                  checked={selectedCourses.includes(course._id)}
+                  onChange={handleCourseSelection}
+                />
+                <span>{course.name}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+
         <div className='flex flex-col lg:flex-row items-start gap-10 text-gray-600'>
           <div className='w-full lg:flex-1 flex flex-col gap-4'>
             <div className='flex-1 flex flex-col gap-1'>
@@ -98,13 +155,8 @@ const AddCoach = () => {
 
             <div className='flex-1 flex flex-col gap-1'>
               <p>Experience</p>
-              <select onChange={(e) => setExperience(e.target.value)} value={experience} className='border border-gray-300 rounded px-3 py-2' >
-                <option value="1 Year">1 Year</option>
-                <option value="2 Year">2 Year</option>
-                <option value="3 Year">3 Year</option>
-                <option value="4 Year">4 Year</option>
-                <option value="5 Year">5 Year</option>
-              </select>
+              <input onChange={(e) => setExperience(e.target.value)} value={experience} className='border border-gray-300 rounded px-3 py-2' type="number" placeholder='Experience' required />
+
             </div>
 
 
@@ -118,12 +170,9 @@ const AddCoach = () => {
           <div className='w-full lg:flex-1 flex flex-col gap-4'>
             <div className='flex-1 flex flex-col gap-1'>
               <p>Specialty</p>
-              <select onChange={(e) => setSpecialty(e.target.value)} value={specialty} className='border border-gray-300 rounded px-3 py-2' >
-                <option value="Robotics">Robotics</option>
-                <option value="Programming">Programming</option>
-                <option value="">Education</option>
 
-              </select>
+              <input onChange={(e) => setSpecialty(e.target.value)} value={specialty} className='border border-gray-300 rounded px-3 py-2' type="text" placeholder='Specialty' required />
+
             </div>
 
             <div>

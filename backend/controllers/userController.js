@@ -7,6 +7,7 @@ import FormData from 'form-data';
 import axios from 'axios'
 import coachModel from '../models/CoachModel.js';
 import appointmentModel from '../models/appointmentModel.js';
+import courseModel from '../models/CourseModel.js';
 //api to register user
 
 const registerUser = async (req, res) => {
@@ -230,17 +231,17 @@ const cancelAppointment = async (req, res) => {
   }
 }
 
-
-//Get coaches by course ID
-const coachesByCourseId = async (req, res) => {
+export const getAllCourses = async (req, res) => {
   try {
-    const { courseId } = req.params
-    const coaches = await coachModel.find({ courses: courseId }).select('-password')
-    res.json({ success: true, coaches })
+    const courses = await courseModel.find({}); // Optional: populate path name
+    res.status(200).json({ success: true, courses });
   } catch (error) {
-    res.json({ success: false, message: error.message })
+    console.error("Error fetching courses:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch courses" });
   }
-}
+};
+
+
 
 
 export { registerUser, loginUser, getProfile, updateProfile, bookAppointment, listAppointment, cancelAppointment}  // Export the functions

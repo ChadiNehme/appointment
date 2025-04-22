@@ -13,6 +13,9 @@ const AppContextProvider = ({ children }) => {
   const currencySymbol = '$'
   const backendUrl = import.meta.env.VITE_BACKEND_URL
 
+  
+
+
   const getCoachesData = async () => {
     try {
       const { data } = await axios.get(backendUrl + '/api/coach/list')

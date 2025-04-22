@@ -12,39 +12,61 @@ import pathModel from '../models/pathModel.js';
 import courseModel from '../models/CourseModel.js';
 dotenv.config()
 
+export const getAllCourses = async (req, res) => {
+  try {
+    const courses = await courseModel.find({}); // Optional: populate path name
+    res.status(200).json({ success: true, courses });
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch courses" });
+  }
+};
+export const allPaths = async (req, res) => {
+  try {
+    const paths = await pathModel.find({})
+    res.json({ success: true, paths })
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
+
+
 const addCoach = async (req, res) => {
   const imgKey = process.env.IMGBB_API_KEY;
 
   try {
-    const { name, email, password, specialty, degree, experience, about, fees } = req.body;
-    const imageFile = req.file;  // Handle image upload via multer
+    const {
+      name,
+      email,
+      password,
+      specialty,
+      degree,
+      experience,
+      about,
+      fees,
+      course,
+    } = req.body;
 
+    const imageFile = req.file;
 
-
-    // Check if all required fields are provided
-    if (!name || !email || !password || !specialty || !degree || !experience || !about || !fees) {
+    if (!name || !email || !password || !specialty || !degree || !experience || !about || !fees || !course) {
       return res.json({ success: false, message: "Enter all fields" });
     }
 
-    // Validate email format
     if (!validator.isEmail(email)) {
       return res.json({ success: false, message: "Enter a Valid Email" });
     }
 
-    // Validate password length
     if (password.length < 8) {
       return res.json({ success: false, message: "Enter a strong password" });
     }
 
-    // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create a new FormData instance and append the image to it
     const formData = new FormData();
-    formData.append('image', fs.createReadStream(imageFile.path)); // Use file path to upload
+    formData.append('image', fs.createReadStream(imageFile.path));
 
-    // Make the POST request to ImgBB
     const response = await axios.post("https://api.imgbb.com/1/upload", formData, {
       headers: {
         ...formData.getHeaders(),
@@ -52,39 +74,37 @@ const addCoach = async (req, res) => {
       params: {
         key: imgKey,
       },
-
-      timeout: 10000,
+      timeout: 20000,
     });
 
-    // Get the URL of the uploaded image
     const imageUrl = response.data.data.display_url;
 
-    // Create a new coach
     const newCoach = new coachModel({
       name,
       email,
       password: hashedPassword,
-      image: imageUrl, // Store the image URL
+      image: imageUrl,
       specialty,
       degree,
       experience,
       about,
       fees,
-      available: true, // Assuming default availability
-      date: Date.now(), // Timestamp for the date
-      slots_booked: {}, // Default empty slots
+      available: true,
+      date: Date.now(),
+      slots_booked: {},
+      course: Array.isArray(course) ? course : [course], // Ensure it’s always an array
     });
 
-    // Save the coach to the database
     await newCoach.save();
 
     return res.status(201).json({ success: true, message: "Coach added successfully", coach: newCoach });
 
   } catch (error) {
-    console.error("Error adding coach:", error);
+    // console.error("Error adding coach:", error);
     return res.json({ success: false, message: "Server error" });
   }
 };
+
 
 //admin login
 const loginAdmin = async (req, res) => {
@@ -195,7 +215,7 @@ const addPath = async (req, res) => {
         key: imgKey,
       },
 
-      timeout: 10000,
+      timeout: 20000,
     });
 
     // Get the URL of the uploaded image
@@ -233,7 +253,7 @@ const addCourse = async (req, res) => {
         key: imgKey,
       },
 
-      timeout: 10000,
+      timeout: 20000,
     });
 
     // Get the URL of the uploaded image

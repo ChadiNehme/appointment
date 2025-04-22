@@ -8,7 +8,7 @@ const PathCard = ({ path }) => {
       <img
         src={path.image} // fallback image
         alt={path.name}
-        className="w-full h-48 object-cover"
+        className="w-full h-58 object-fill"
       />
 
       <div className="p-4">

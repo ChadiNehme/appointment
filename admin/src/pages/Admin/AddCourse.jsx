@@ -1,21 +1,21 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { AdminContext } from "../../context/AdminContext";
 import { toast } from "react-toastify";
-import { useRef } from "react";
+import { assets } from "../../assets/assets_admin/assets"; // Add this line
 
 const AddCourseForm = () => {
   const [form, setForm] = useState({
     name: "",
     description: "",
-    image: false,
+    image: null,
     path: "",
   });
 
   const [paths, setPaths] = useState([]);
   const { backendUrl, aToken } = useContext(AdminContext);
   const fileInputRef = useRef(null);
-  // Fetch all paths for the dropdown
+
   useEffect(() => {
     const fetchPaths = async () => {
       try {
@@ -30,6 +30,11 @@ const AddCourseForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!form.image) {
+      return toast.error("Please upload a course image");
+    }
+
     const formData = new FormData();
     formData.append("name", form.name);
     formData.append("description", form.description);
@@ -42,27 +47,43 @@ const AddCourseForm = () => {
         formData,
         { headers: { aToken } }
       );
+
       if (data.success) {
         toast.success(data.message);
-        setForm({ name: "", description: "", image: false, path: "" });
-        // Reset file input manually
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
-
+        setForm({ name: "", description: "", image: null, path: "" });
+        if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
         toast.error(data.message);
       }
     } catch (err) {
       toast.error(err.message);
-      console.log(err.message);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-md space-y-4 m-2">
       <h2 className="text-xl font-semibold text-gray-700">Add New Course</h2>
-
+      
+      {/* Image Upload */}
+      <div className="flex items-center gap-4 text-gray-500">
+        <label htmlFor="course-img">
+          <img
+            className="w-16 h-16 object-cover bg-gray-100 rounded-full cursor-pointer"
+            src={form.image ? URL.createObjectURL(form.image) : assets.upload_area}
+            alt="Upload Preview"
+          />
+        </label>
+        <input
+          type="file"
+          id="course-img"
+          hidden
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={(e) => setForm({ ...form, image: e.target.files[0] })}
+        />
+        <p>Upload course <br /> image</p>
+      </div>
+      {/* Select Path */}
       <select
         value={form.path}
         onChange={(e) => setForm({ ...form, path: e.target.value })}
@@ -77,6 +98,7 @@ const AddCourseForm = () => {
         ))}
       </select>
 
+      {/* Course Name */}
       <input
         type="text"
         placeholder="Course Name"
@@ -86,6 +108,7 @@ const AddCourseForm = () => {
         required
       />
 
+      {/* Description */}
       <textarea
         placeholder="Description"
         className="w-full border p-2 rounded"
@@ -94,14 +117,7 @@ const AddCourseForm = () => {
         required
       />
 
-      <input
-        type="file"
-        accept="image/*"
-        className="w-full"
-        ref={fileInputRef}
-        onChange={(e) => setForm({ ...form, image: e.target.files[0] })}
-        required
-      />
+
 
       <button
         className="bg-[#5f6FFF] text-white px-4 py-2 rounded hover:opacity-90"

@@ -1,57 +1,45 @@
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { useParams } from "react-router-dom";
 import CourseCard from "../component/CourseCard";
-import { assets } from "../assets/assets_frontend/assets";
 
+import { toast } from "react-toastify";
+import axios from 'axios'
+import { AppContext } from "../context/AppContext";
 const Courses = () => {
   const { pathId } = useParams();
-  const [courses, setCourses] = useState([
-    {
-      _id: "1",
-      name: "Java",
-      description: "Learn Java from scratch.",
-      image: `${assets.scratch}`,
-      pathId: 2,
-    },
-    {
-      _id: "2",
-      name: "Python",
-      description: "Start coding with Python.",
-      image: "https://via.placeholder.com/400x200",
-      pathId: 2,
-    },
-    {
-      _id: "3",
-      name: "Physics Basics",
-      description: "Understand motion, force, and energy.",
-      image: "https://via.placeholder.com/400x200",
-      pathId: 3,
-    },
-    {
-      _id: "4",
-      name: "Scratch",
-      description: "Scratch is a visual programming language where you create code by snapping colorful blocks together. It's perfect for beginners to learn logic, problem-solving, and creativity—without writing any text code.",
-      image: `${assets.scratch}`,
-      pathId: 1,
-    },
-    // Add more courses as needed
-  ]);
+  const { backendUrl } = useContext(AppContext)
 
-  // useEffect(() => {
-  //   fetch(`/api/paths/${pathId}/courses`)
-  //     .then((res) => res.json())
-  //     .then((data) => setCourses(data));
-  // }, [pathId]);
-  const courseFilttered = courses.filter((course) => course.pathId === Number(pathId));
+  const [courses, setCourses] = useState([]);
 
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const { data } = await axios.get(`${backendUrl}/api/paths/${pathId}/courses`);
+        if (data.success) {
+          setCourses(data.courses);
+        } else {
+          toast.error(data.message || "Failed to load courses");
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+        toast.error("Something went wrong fetching courses");
+      }
+    };
+
+    fetchCourses();
+  }, [pathId, backendUrl]);
 
   return (
     <div>
-      <h2>Courses Under This Path</h2>
+      <h2 className="text-3xl font-bold text-center text-[#5F6FFF] mb-8">Courses Under This Path</h2>
       <div className="flex items-center justify-center flex-wrap gap-3">
-        {courseFilttered.map((course) => (
-          <CourseCard key={course._id} course={course} pathId={pathId} />
-        ))}
+        {courses.length > 0 ? (
+          courses.map((course) => (
+            <CourseCard key={course._id} course={course} pathId={pathId} />
+          ))
+        ) : (
+          <p className="text-gray-500">No courses found for this path.</p>
+        )}
       </div>
     </div>
   );
