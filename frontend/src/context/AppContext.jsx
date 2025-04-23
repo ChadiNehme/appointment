@@ -8,13 +8,27 @@ export const AppContext = createContext()
 const AppContextProvider = ({ children }) => {
 
   const [coaches, setCoaches] = useState([])
+  const [courses,setCourses] = useState([])
   const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : false)
   const [userData, setUserData] = useState(false)
   const currencySymbol = '$'
   const backendUrl = import.meta.env.VITE_BACKEND_URL
 
   
-
+const getCoursrsData = async () => {
+  try {
+    const { data } = await axios.get(backendUrl + '/api/courses/all-courses')
+    if (data.success) {
+      setCourses(data.courses)
+      
+    } else {
+      toast.error(data.message)
+    }
+  } catch (error) {
+    console.log(error);
+    toast.error(error.message)
+  }
+}
 
   const getCoachesData = async () => {
     try {
@@ -50,6 +64,7 @@ const AppContextProvider = ({ children }) => {
 
   const value = {
     coaches,getCoachesData,
+    courses,
     currencySymbol,
     token,
     setToken,
@@ -61,7 +76,10 @@ const AppContextProvider = ({ children }) => {
 
   useEffect(() => {
     getCoachesData()
+    getCoursrsData()
+    
   }, [])
+
 
   useEffect(() => {
     if (token) {

@@ -13,6 +13,7 @@ import Footer from "./component/Footer"
 import { ToastContainer, toast } from 'react-toastify';
 import Paths from "./pages/Paths"
 import Courses from "./pages/Courses"
+import AllCoaches from "./pages/AllCoaches"
 function App() {
   return (
     <div className="mx-4 sm:mx-[10%]">
@@ -20,8 +21,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/coaches" element={<Coaches />} />
-        <Route path='/coaches/:speciality' element={<Coaches />} />
+        <Route path="/coaches" element={<AllCoaches />} />
+        <Route path='/coaches/:speciality' element={<AllCoaches />} />
         <Route path='/login' element={<Login />} />
         <Route path='/about' element={<About />} />
         <Route path="/contact" element={<Contact />} />
