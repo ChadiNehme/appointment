@@ -15,6 +15,7 @@ import CoachAppointments from "./pages/Coach/CoachAppointments";
 import CoachProfile from "./pages/Coach/CoachProfile";
 import AddPathForm from "./pages/Admin/AddPath";
 import AddCourseForm from "./pages/Admin/AddCourse";
+import AvailabilityForm from "./pages/Coach/AvailabilityForm";
 
 function App() {
 
@@ -41,6 +42,7 @@ function App() {
           <Route path="/coach-dashboard" element={<CoachDashboard />} />
           <Route path="/coach-appointment" element={<CoachAppointments />} />
           <Route path="/coach-profile" element={<CoachProfile />} />
+          <Route path="/availability-form" element={<AvailabilityForm />} />
 
 
 

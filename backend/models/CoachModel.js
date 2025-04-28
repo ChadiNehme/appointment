@@ -16,7 +16,14 @@ const coachSchema = new mongoose.Schema({
   course: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Course',
-  }]
+  }],
+  availability: [
+    {
+      day: { type: String, required: true },    // e.g., 'Monday'
+      startTime: { type: String, required: true }, // e.g., '16:00'
+      endTime: { type: String, required: true },   // e.g., '17:00'
+    }
+  ]
 }, { minimize: false })
 
 const coachModel = mongoose.models.coach || mongoose.model("Coach", coachSchema)

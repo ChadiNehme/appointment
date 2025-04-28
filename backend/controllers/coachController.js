@@ -17,7 +17,7 @@ const changeAvailability = async (req, res) => {
 const coachList = async (req, res) => {
   try {
     const coaches = await coachModel.find({}).select(['-password', '-email'])
-    console.log(coaches);
+    
     
     res.json({ success: true, coaches })
   } catch (error) {
@@ -82,21 +82,35 @@ const appointmentComplete = async (req, res) => {
 //cancel appointment
 const appointmentCancel = async (req, res) => {
   try {
-    const { coachId, appointmentId } = req.body
+    const { coachId, appointmentId } = req.body;
 
-    const appointmentData = await appointmentModel.findById(appointmentId)
+    const appointmentData = await appointmentModel.findById(appointmentId);
     if (appointmentData && appointmentData.coachId === coachId) {
-      await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
-      return res.json({ success: true, message: 'Appointment Cancelled' })
+      
+      // Mark the appointment as cancelled
+      await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true });
+
+      // Remove the slot from coach's available slots
+      const { slotDate, slotTime } = appointmentData;
+      const coachData = await coachModel.findById(coachId).select('-password');
+
+      // Update the coach's booked slots
+      let slots_booked = coachData.slots_booked;
+      if (slots_booked[slotDate]) {
+        slots_booked[slotDate] = slots_booked[slotDate].filter(slot => slot !== slotTime);
+        await coachModel.findByIdAndUpdate(coachId, { slots_booked: slots_booked });
+      }
+
+      return res.json({ success: true, message: 'Appointment Cancelled and Slot Updated' });
+
     } else {
-      return res.json({ success: false, message: 'Appointment not found' })
+      return res.json({ success: false, message: 'Appointment not found or not authorized' });
     }
 
-
   } catch (error) {
-    res.json({ success: false, message: error.message })
+    res.json({ success: false, message: error.message });
   }
-}
+};
 
 //dashboard data
 const coachDashboard = async (req, res) => {
@@ -150,7 +164,80 @@ const updateCoachProfile = async (req, res) => {
     res.json({ success: false, message: error.message })
   }
 }
+const updateAvailability = async (req, res) => {
+  try {
+    
+    const { coachId,availability } = req.body;
+
+    const coach = await coachModel.findByIdAndUpdate(coachId, { availability }, { new: true });
+
+    res.json({ success: true, message: "Availability updated", coach });
+    console.log(coach);
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+export const getCoachAvailability = async (req, res) => {
+  try {
+    // Get coach ID from the request, assuming coach is authenticated and stored in req.user
+    const {coachId} = req.body; // You should set this up using authentication (JWT, etc.)
+
+    // Find coach by ID and populate the availability field
+    const coach = await coachModel.findById(coachId);
+
+    if (!coach) {
+      return res.status(404).json({ success: false, message: 'Coach not found' });
+    }
+
+    // Send availability data to the client
+    return res.status(200).json({ success: true, availability: coach.availability });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+export const deleteCoachAvailability = async (req, res) => {
+  try {
+    const { coachId,day, startTime, endTime } = req.body;
+
+    // Get coach ID from the request (ensure authentication is done)
+    
+
+    // Find the coach and update the availability
+    const coach = await coachModel.findById(coachId);
+    if (!coach) {
+      return res.status(404).json({ success: false, message: 'Coach not found' });
+    }
+
+    // Find the index of the slot to remove
+    const slotIndex = coach.availability.findIndex(slot => 
+      slot.day === day && slot.startTime === startTime && slot.endTime === endTime
+    );
+
+    if (slotIndex === -1) {
+      return res.status(400).json({ success: false, message: 'Slot not found' });
+    }
+
+    // Remove the slot from the availability array
+    coach.availability.splice(slotIndex, 1);
+
+    // Save the updated coach
+    await coach.save();
+
+    return res.status(200).json({ success: true, message: 'Availability slot removed successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+
 export {
+  updateAvailability,
   changeAvailability,
   coachList,
   loginCoach,

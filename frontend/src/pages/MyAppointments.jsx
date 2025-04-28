@@ -49,8 +49,10 @@ const MyAppointments = () => {
   useEffect(() => {
     if (token) {
       getUserAppointments()
+      getCoachesData();
     }
   }, [])
+
 
 
   return (
