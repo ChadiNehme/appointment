@@ -14,6 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import Paths from "./pages/Paths"
 import Courses from "./pages/Courses"
 import AllCoaches from "./pages/AllCoaches"
+import JoinUs from "./pages/JoinUs"
 function App() {
   return (
     <div className="mx-4 sm:mx-[10%]">
@@ -29,6 +30,7 @@ function App() {
         <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/my-appointments" element={<MyAppointment />} />
         <Route path="/appointment/:coachId" element={<Appointment />} />
+        <Route path="/join-us" element={<JoinUs />} />
 
         <Route path="/paths" element={<Paths />} />
         <Route path="/paths/:pathId/courses" element={<Courses />} />

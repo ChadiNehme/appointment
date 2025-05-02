@@ -12,8 +12,9 @@ import appointments_icon from './appointments_icon.svg'
 import earning_icon from './earning_icon.svg'
 import patients_icon from './patients_icon.svg'
 import taktiklablogo from './taktiklablogo.png'
-
+import menu_icon from './menu_icon.svg'
 export const assets = {
+    menu_icon,
     add_icon,
     admin_logo,
     appointment_icon,

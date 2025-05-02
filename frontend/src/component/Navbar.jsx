@@ -42,10 +42,10 @@ const Navbar = () => {
           <li className='py-1'>About</li>
           <hr className='border-none outline-none h-0.5 bg-[#5f6FFF] w-3/5 m-auto hidden' />
         </NavLink>
-        {/* <NavLink to='/contact'>
-          <li className='py-1'>Contact</li>
+        <NavLink to='/join-us'>
+          <li className='py-1'>Join Us</li>
           <hr className='border-none outline-none h-0.5 bg-[#5f6FFF] w-3/5 m-auto hidden' />
-        </NavLink> */}
+        </NavLink>
       </ul>
       <div className='flex items-center gap-4'>
         {
@@ -63,7 +63,7 @@ const Navbar = () => {
               </div>
             </div>
             :
-            <button onClick={() => navigate('/login')} className='bg-[#5f6FFF] text-white px-8 py-3 rounded-full font-light hidden md:block'>Create account</button>
+            <button onClick={() => navigate('/login')} className='bg-[#5f6FFF] cursor-pointer text-white px-8 py-3 rounded-full font-light hidden md:block'>Create account</button>
         }
         <img onClick={() => setShowMenu(true)} className='w-6 md:hidden' src={assets.menu_icon} alt="" />
 

@@ -2,6 +2,9 @@ import coachModel from "../models/CoachModel.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import appointmentModel from "../models/appointmentModel.js"
+import fs from 'fs';
+import axios from 'axios';
+import FormData from 'form-data';
 const changeAvailability = async (req, res) => {
   try {
     const { coachId } = req.body
@@ -17,8 +20,8 @@ const changeAvailability = async (req, res) => {
 const coachList = async (req, res) => {
   try {
     const coaches = await coachModel.find({}).select(['-password', '-email'])
-    
-    
+
+
     res.json({ success: true, coaches })
   } catch (error) {
     res.json({ success: false, message: error.message })
@@ -32,15 +35,15 @@ const loginCoach = async (req, res) => {
     const { email, password } = req.body
     const coach = await coachModel.findOne({ email })
     if (!coach) {
-      res.json({ success: false, message: 'Invalid Credentials' })
+      return res.json({ success: false, message: 'Invalid Credentials' })
     }
     const isMatch = await bcrypt.compare(password, coach.password)
     if (!isMatch) {
-      res.json({ success: false, message: 'Invalid Credentials' })
+      return res.json({ success: false, message: 'Invalid Credentials' })
     } else {
       const token = jwt.sign({ id: coach._id }, process.env.JWT_SECRET)
 
-      res.json({ success: true, token })
+      return res.json({ success: true, token })
     }
   } catch (error) {
     res.json({ success: false, message: error.message })
@@ -86,7 +89,7 @@ const appointmentCancel = async (req, res) => {
 
     const appointmentData = await appointmentModel.findById(appointmentId);
     if (appointmentData && appointmentData.coachId === coachId) {
-      
+
       // Mark the appointment as cancelled
       await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true });
 
@@ -155,25 +158,59 @@ const coachProfile = async (req, res) => {
 }
 
 //update coach profile
-const updateCoachProfile = async (req, res) => {
+export const updateCoachProfile = async (req, res) => {
   try {
-    const { coachId, fees, available } = req.body
-    await coachModel.findByIdAndUpdate(coachId, { fees, available })
-    res.json({ success: true, message: 'Profile Updated' })
+    const { coachId, fees, available } = req.body;
+    const imageFile = req.file;  // The uploaded image file
+    const imgKey = process.env.IMGBB_API_KEY; // The ImgBB API key
+
+    if (!fees || available === undefined) {
+      return res.json({ success: false, message: 'Missing Details' });
+    }
+
+    let imageUrl;
+
+    // If an image is uploaded, upload it to ImgBB
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append('image', fs.createReadStream(imageFile.path));
+
+      const response = await axios.post('https://api.imgbb.com/1/upload', formData, {
+        headers: {
+          ...formData.getHeaders(),
+        },
+        params: {
+          key: imgKey,
+        },
+      });
+
+      imageUrl = response.data.data.display_url; // Get the URL of the uploaded image
+    }
+
+    // Update the coach's profile in the database
+    await coachModel.findByIdAndUpdate(coachId, {
+      fees,
+      available,
+      ...(imageUrl && { image: imageUrl }), // Update the image if it's available
+    });
+
+    res.json({ success: true, message: 'Profile Updated' });
   } catch (error) {
-    res.json({ success: false, message: error.message })
+    console.log(error);
+    res.json({ success: false, message: error.message });
   }
-}
+};
+
 const updateAvailability = async (req, res) => {
   try {
-    
-    const { coachId,availability } = req.body;
+
+    const { coachId, availability } = req.body;
 
     const coach = await coachModel.findByIdAndUpdate(coachId, { availability }, { new: true });
 
     res.json({ success: true, message: "Availability updated", coach });
     console.log(coach);
-    
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -183,7 +220,7 @@ const updateAvailability = async (req, res) => {
 export const getCoachAvailability = async (req, res) => {
   try {
     // Get coach ID from the request, assuming coach is authenticated and stored in req.user
-    const {coachId} = req.body; // You should set this up using authentication (JWT, etc.)
+    const { coachId } = req.body; // You should set this up using authentication (JWT, etc.)
 
     // Find coach by ID and populate the availability field
     const coach = await coachModel.findById(coachId);
@@ -202,10 +239,10 @@ export const getCoachAvailability = async (req, res) => {
 
 export const deleteCoachAvailability = async (req, res) => {
   try {
-    const { coachId,day, startTime, endTime } = req.body;
+    const { coachId, day, startTime, endTime } = req.body;
 
     // Get coach ID from the request (ensure authentication is done)
-    
+
 
     // Find the coach and update the availability
     const coach = await coachModel.findById(coachId);
@@ -214,7 +251,7 @@ export const deleteCoachAvailability = async (req, res) => {
     }
 
     // Find the index of the slot to remove
-    const slotIndex = coach.availability.findIndex(slot => 
+    const slotIndex = coach.availability.findIndex(slot =>
       slot.day === day && slot.startTime === startTime && slot.endTime === endTime
     );
 
@@ -246,5 +283,5 @@ export {
   appointmentCancel,
   coachDashboard,
   coachProfile,
-  updateCoachProfile
+  
 }

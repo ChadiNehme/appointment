@@ -10,6 +10,7 @@ import appointmentModel from '../models/appointmentModel.js';
 import userModel from '../models/userModel.js';
 import pathModel from '../models/pathModel.js';
 import courseModel from '../models/CourseModel.js';
+import requestModel from '../models/requestModel.js';
 dotenv.config()
 
 export const getAllCourses = async (req, res) => {
@@ -270,6 +271,102 @@ const addCourse = async (req, res) => {
     res.json({ success: false, message: error.message })
   }
 }
+
+// GET all join requests
+export const getAllJoinRequests = async (req, res) => {
+  try {
+    const requests = await requestModel.find()
+    .populate('path')      // Populate the path field
+    .populate('course')    // Populate the course field
+    .sort({ createdAt: -1 });
+  
+  res.status(200).json({ success: true, requests });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to fetch requests" });
+  }
+};
+
+// PUT update status
+// export const updateJoinRequestStatus = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { status } = req.body;
+
+//     if (!["accepted", "rejected"].includes(status)) {
+//       return res.status(400).json({ success: false, message: "Invalid status" });
+//     }
+
+//     const request = await requestModel.findByIdAndUpdate(
+//       id,
+//       { status },
+//       { new: true }
+//     );
+
+//     res.status(200).json({ success: true, updatedRequest: request });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: "Failed to update status" });
+//   }
+// };
+
+export const updateJoinRequestStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!["accepted", "rejected"].includes(status)) {
+      return res.status(400).json({ success: false, message: "Invalid status" });
+    }
+
+    const request = await requestModel.findById(id);
+    if (!request) {
+      return res.status(404).json({ success: false, message: "Request not found" });
+    }
+
+    // If already accepted or rejected, prevent further processing
+    if (request.status !== "pending") {
+      return res.status(400).json({ success: false, message: "Request already processed" });
+    }
+
+    // Update request status
+    request.status = status;
+    await request.save();
+
+    // If status is "accepted", create coach
+    if (status === "accepted") {
+      const course = await courseModel.findById(request.course); // Assuming request.course stores the course ID
+      if (!course) {
+        return res.status(404).json({ success: false, message: "Course not found for coach" });
+      }
+
+      const defaultPassword = "12345678";
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(defaultPassword, salt);
+
+      const newCoach = new coachModel({
+        name: request.name,
+        email: request.email,
+        password: hashedPassword,
+        image: "https://example.com/default-profile.jpg", // change if needed
+        specialty: request.specialty || "Not specified",
+        degree: request.degree || "Not specified",
+        experience: request.experience || "Not specified",
+        about: request.about,
+        fees: request.fee,
+        available: true,
+        date: Date.now(),
+        slots_booked: {},
+        course: [course._id],  // This associates the coach with the course
+      });
+
+      await newCoach.save();
+    }
+
+    res.status(200).json({ success: true, message: "Request processed", updatedRequest: request });
+  } catch (error) {
+    console.error("Error processing join request:", error);
+    res.status(500).json({ success: false, message: "Failed to update status" });
+  }
+};
 
 
 

@@ -16,6 +16,7 @@ import CoachProfile from "./pages/Coach/CoachProfile";
 import AddPathForm from "./pages/Admin/AddPath";
 import AddCourseForm from "./pages/Admin/AddCourse";
 import AvailabilityForm from "./pages/Coach/AvailabilityForm";
+import AdminRequests from "./pages/Admin/AdminRequests ";
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
           <Route path="/add-path" element={<AddPathForm />} />
           <Route path="/add-course" element={<AddCourseForm />} />
           <Route path="/coach-list" element={<CoachList />} />
+          <Route path="/join-requests" element={<AdminRequests />} />
           {/* coach route */}
           <Route path="/coach-dashboard" element={<CoachDashboard />} />
           <Route path="/coach-appointment" element={<CoachAppointments />} />

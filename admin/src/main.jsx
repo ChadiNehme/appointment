@@ -6,13 +6,16 @@ import { BrowserRouter } from 'react-router-dom'
 import AdminContextProvider from './context/AdminContext.jsx'
 import CoachContextProvider from './context/CoachContext.jsx'
 import AppContextProvider from './context/AppContext.jsx'
+import { SidebarProvider } from './context/SidebarContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <AdminContextProvider>
       <CoachContextProvider>
         <AppContextProvider>
-          <App />
+          <SidebarProvider>
+            <App />
+          </SidebarProvider>
         </AppContextProvider>
       </CoachContextProvider>
     </AdminContextProvider>

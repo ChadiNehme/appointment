@@ -80,7 +80,8 @@ const Appointment = () => {
   const bookAppointment = async () => {
     if (!token) {
       toast.warn('Please login to book an appointment');
-      return navigate('/login');
+      setTimeout(() => navigate('/login'), 100); // small delay to ensure proper redirect
+      return;
     }
 
     if (!slotTime) {
@@ -102,7 +103,6 @@ const Appointment = () => {
       if (data.success) {
         toast.success(data.message);
         await getCoachesData();
-
         navigate('/my-appointments');
       } else {
         toast.error(data.message);

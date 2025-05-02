@@ -69,7 +69,8 @@ const Coaches = () => {
    
         <div className='w-full flex flex-wrap gap-4 p-5 px-3 sm:px-0 items-center justify-center'>
           {filterCoach.map((item, index) => (
-            <div onClick={() => { navigate(`/appointment/${item._id}`); scrollTo(0, 0) }} className='w-80 md:w-96 h-[450px] border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500 sm:w-1/2 md:w-1/3  lg:w-1/4' key={index}>
+            <div onClick={() => { navigate(`/appointment/${item._id}`); scrollTo(0, 0) }} className='w-full sm:w-1/2 md:w-1/3 lg:w-1/4 h-[450px] border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500'
+            key={index}>
               <img className='bg-blue-50 w-full h-80  rounded-t-xl object-cover' src={item.image} alt="" />
               <div className='p-4'>
                 <div className={`flex items-center gap-2 text-sm text-center ${item.available ? 'text-green-500' : 'text-gray-500'} `}>
